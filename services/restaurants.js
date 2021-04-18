@@ -1,7 +1,7 @@
 const db = require('../db/index');
 const getRestaurants = async (req, res) => {
     try {
-        const restaurantRatingsData = await db.query("select * from restaurants left join (select restaurant_id, COUNT (*), TRUNC (AVG(rating),1) as average_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id");
+        const restaurantRatingsData = await db.query("select * from restaurants left join (select restaurant_id, COUNT (*), TRUNC (AVG(rating),1) as average_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id;");
         res.status(200).json({
             status: "success",
             results: restaurantRatingsData.rows.length,
@@ -17,7 +17,7 @@ const getRestaurants = async (req, res) => {
 const getRestaurant = async (req, res) => {
     try {
         const restaurant = await db.query("select * from restaurants left join (select restaurant_id, COUNT (*), TRUNC (AVG(rating),1) as average_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id where id = $1", [req.params.id]);
-        const reviews = await db.query("select * from reviews where restaurant_id = $1", [req.params.id])
+        const reviews = await db.query("select * from reviews where restaurant_id = $1", [req.params.id]);
         res.status(200).json({
             status: "success",
             data: {
@@ -40,7 +40,7 @@ const createRestaurant = async (req, res) => {
             },
         })
     } catch (error) {
-        res.status(409).json({ message: error.message })
+        res.status(409).json({ message: error.message });
     }
 };
 
@@ -53,22 +53,21 @@ const updateRestaurant = async (req, res) => {
                 restaurant: results.rows[0],
             },
         })
-    } catch (err) {
-        res.status(400).json({ message: error.message })
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 };
 const deleteRestaurant = async (req, res) => {
     try {
-        const results = db.query("DELETE FROM restaurants where id = $1", [req.params.id])
+        await db.query("DELETE FROM reviews where restaurant_id = $1", [req.params.id]);
+        await db.query("DELETE FROM restaurants where id = $1", [req.params.id]);
         res.status(204).json({
             status: "success"
         })
-    } catch (err) {
-        res.status(400).json({ message: error.message })
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-
 };
-
 
 module.exports = {
     getRestaurants,

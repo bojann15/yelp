@@ -11,7 +11,6 @@ const {
     deleteRestaurant,
 } = require("./services/restaurants")
 const {
-    getReviews,
     createReview
 } = require("./services/reviews")
 
@@ -26,8 +25,7 @@ app.post("/api/v1/restaurants", createRestaurant);
 app.put("/api/v1/restaurants/:id", updateRestaurant);
 app.delete("/api/v1/restaurants/:id", deleteRestaurant);
 
-app.get("/api/v1/restaurants/:id", getReviews);
-app.post("/api/v1/restaurants/:id/addReview", createReview)
+app.post("/api/v1/restaurants/:id/addReview", createReview);
 
 const port = process.env.PORT || 3001;
 
